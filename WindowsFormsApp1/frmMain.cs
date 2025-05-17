@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
-using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Security.Cryptography;
@@ -33,7 +32,11 @@ namespace WindowsFormsApp1
             LoadProductData();
             LoadOrderData();
             LoadOrderDetailData();
+            LoadThongTinTongQuan();
         }
+
+        // change FUONGTWAN to your server name
+        string connectionString = @"Data Source=FUONGTWAN;Initial Catalog=dbms_mypham;Integrated Security=True";
 
         private void LoadTriggerInfo()
         {
@@ -45,7 +48,7 @@ namespace WindowsFormsApp1
         }
         private void LoadRevenueByMonth()
         {
-            using (SqlConnection conn = new SqlConnection(@"Data Source=fuongtwan;Initial Catalog=dbms_mypham;Integrated Security=True"))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 string query = "SELECT * FROM vw_RevenueByMonth";
@@ -57,7 +60,7 @@ namespace WindowsFormsApp1
         }
         private void LoadProductsInStock()
         {
-            using (SqlConnection conn = new SqlConnection(@"Data Source=fuongtwan;Initial Catalog=dbms_mypham;Integrated Security=True"))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 string query = "SELECT * FROM vw_ProductsInStock";
@@ -79,14 +82,14 @@ namespace WindowsFormsApp1
             series.ChartType = SeriesChartType.Line;
             series.XValueType = ChartValueType.Date;
 
-            using (SqlConnection conn = new SqlConnection(@"Data Source=fuongtwan;Initial Catalog=dbms_mypham;Integrated Security=True"))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 string query = @"
-            SELECT OrderDate, SUM(Quantity * UnitPrice) AS Total
-            FROM vw_CustomerPurchaseHistory
-            GROUP BY OrderDate
-            ORDER BY OrderDate";
+                SELECT OrderDate, SUM(Quantity * UnitPrice) AS Total
+                FROM vw_CustomerPurchaseHistory
+                GROUP BY OrderDate
+                ORDER BY OrderDate";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
                 SqlDataReader reader = cmd.ExecuteReader();
@@ -105,6 +108,38 @@ namespace WindowsFormsApp1
             chartPurchaseHistory.Series.Add(series);
         }
 
+        private void LoadThongTinTongQuan()
+        {
+            using (SqlConnection conn = new SqlConnection(@"Data Source=fuongtwan;Initial Catalog=dbms_mypham;Integrated Security=True"))
+            {
+                conn.Open();
+
+                SqlCommand cmd1 = new SqlCommand("SELECT COUNT(*) FROM Orders", conn);
+                int tongDon = (int)cmd1.ExecuteScalar();
+
+                SqlCommand cmd2 = new SqlCommand("SELECT SUM(TotalAmount) FROM Orders WHERE Status = 'Completed'", conn);
+                object doanhThuRaw = cmd2.ExecuteScalar();
+                decimal tongDoanhThu = doanhThuRaw != DBNull.Value ? Convert.ToDecimal(doanhThuRaw) : 0;
+
+                SqlCommand cmd3 = new SqlCommand("SELECT COUNT(*) FROM Orders WHERE Status = 'Completed'", conn);
+                int donHoanThanh = (int)cmd3.ExecuteScalar();
+
+                SqlCommand cmd3_1 = new SqlCommand("SELECT COUNT(*) FROM Orders WHERE Status = 'Pending'", conn);
+                int donDangCho = (int)cmd3_1.ExecuteScalar();
+
+                SqlCommand cmd4 = new SqlCommand("SELECT COUNT(*) FROM Orders WHERE Status = 'Cancelled'", conn);
+                int donHuy = (int)cmd4.ExecuteScalar();
+
+                txtThongTinTongQuan.Text =
+                $@"👋 Xin chào, Admin!
+🕒 Hôm nay: {DateTime.Now:dddd, dd/MM/yyyy HH:mm}
+📦 Tổng đơn hàng: {tongDon}
+✅ Đã hoàn thành: {donHoanThanh}
+⏳ Đang chờ xử lý: {donDangCho}
+❌ Đã hủy: {donHuy}
+💰 Tổng doanh thu: {tongDoanhThu:N0} VNĐ";
+            }
+        }
 
 
         private void LoadCustomerData()
@@ -120,7 +155,7 @@ namespace WindowsFormsApp1
             dgvCustomer.Columns.Add("Address", "Địa chỉ");
             dgvCustomer.Columns.Add("CreatedAt", "Ngày tạo");
 
-            using (SqlConnection conn = new SqlConnection(@"Data Source=FUONGTWAN;Initial Catalog=dbms_mypham;Integrated Security=True"))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 string query = "SELECT * FROM Customers";
@@ -148,9 +183,8 @@ namespace WindowsFormsApp1
 
         private void btnThemCustomer_Click(object sender, EventArgs e)
         {
-            // Tạo form thêm mới khách hàng
             addCustomer addForm = new addCustomer();
-            addForm.FormClosed += (s, args) => LoadCustomerData(); // sau khi đóng form thì reload danh sách
+            addForm.FormClosed += (s, args) => LoadCustomerData();
             addForm.ShowDialog();
         }
         private void dgvCustomer_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -166,7 +200,7 @@ namespace WindowsFormsApp1
                 string phone = row.Cells["PhoneNumber"].Value?.ToString();
                 string address = row.Cells["Address"].Value?.ToString();
 
-                using (SqlConnection conn = new SqlConnection(@"Data Source=FUONGTWAN;Initial Catalog=dbms_mypham;Integrated Security=True"))
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     string query = @"UPDATE Customers 
                              SET FullName = @FullName, Email = @Email, Password = @Password,
@@ -193,16 +227,13 @@ namespace WindowsFormsApp1
         {
             if (dgvCustomer.SelectedRows.Count > 0)
             {
-                // Lấy hàng đang chọn
                 DataGridViewRow selectedRow = dgvCustomer.SelectedRows[0];
                 int customerID = Convert.ToInt32(selectedRow.Cells["CustomerID"].Value);
 
-                // Xác nhận trước khi xóa
                 DialogResult result = MessageBox.Show("Bạn có chắc chắn muốn xóa khách hàng này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
-                    // Thực hiện xóa
-                    using (SqlConnection conn = new SqlConnection(@"Data Source=FUONGTWAN;Initial Catalog=dbms_mypham;Integrated Security=True"))
+                    using (SqlConnection conn = new SqlConnection(connectionString))
                     {
                         conn.Open();
                         string query = "DELETE FROM Customers WHERE CustomerID = @CustomerID";
@@ -210,8 +241,6 @@ namespace WindowsFormsApp1
                         cmd.Parameters.AddWithValue("@CustomerID", customerID);
                         cmd.ExecuteNonQuery();
                     }
-
-                    // Cập nhật lại bảng
                     LoadCustomerData();
                     MessageBox.Show("Đã xóa khách hàng.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -224,7 +253,7 @@ namespace WindowsFormsApp1
 
         private void btnLuuCustomer_Click(object sender, EventArgs e)
         {
-            using (SqlConnection conn = new SqlConnection(@"Data Source=FUONGTWAN;Initial Catalog=dbms_mypham;Integrated Security=True"))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
 
@@ -266,13 +295,13 @@ namespace WindowsFormsApp1
                 }
 
                 MessageBox.Show("Đã lưu các thay đổi!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                LoadCustomerData(); // Tải lại bảng sau khi lưu
+                LoadCustomerData();
             }
         }
 
         private void btnReloadCustomer_Click(object sender, EventArgs e)
         {
-            LoadCustomerData(); // gọi lại hàm đã viết
+            LoadCustomerData();
             MessageBox.Show("Đã tải lại danh sách khách hàng.", "Tải lại", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -291,7 +320,7 @@ namespace WindowsFormsApp1
             dgvCustomer.Columns.Add("Address", "Địa chỉ");
             dgvCustomer.Columns.Add("CreatedAt", "Ngày tạo");
 
-            using (SqlConnection conn = new SqlConnection(@"Data Source=FUONGTWAN;Initial Catalog=dbms_mypham;Integrated Security=True"))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = @"
             SELECT * FROM Customers
@@ -334,7 +363,7 @@ namespace WindowsFormsApp1
             dgvProduct.Columns.Add("ImageURL", "Hình ảnh");
             dgvProduct.Columns.Add("Description", "Mô tả");
 
-            using (SqlConnection conn = new SqlConnection(@"Data Source=FUONGTWAN;Initial Catalog=dbms_mypham;Integrated Security=True"))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 string query = "SELECT * FROM Products";
@@ -368,7 +397,7 @@ namespace WindowsFormsApp1
                 DialogResult result = MessageBox.Show("Bạn có chắc chắn muốn xóa sản phẩm này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
-                    using (SqlConnection conn = new SqlConnection(@"Data Source=FUONGTWAN;Initial Catalog=dbms_mypham;Integrated Security=True"))
+                    using (SqlConnection conn = new SqlConnection(connectionString))
                     {
                         conn.Open();
                         string query = "DELETE FROM Products WHERE ProductID = @ProductID";
@@ -389,15 +418,14 @@ namespace WindowsFormsApp1
 
         private void btnThemProduct_Click(object sender, EventArgs e)
         {
-            // Tạo form thêm mới sản phẩm
             addProduct addForm = new addProduct();
-            addForm.FormClosed += (s, args) => LoadProductData(); // sau khi đóng form thì reload danh sách
+            addForm.FormClosed += (s, args) => LoadProductData();
             addForm.ShowDialog();
         }
 
         private void btnLuuProduct_Click(object sender, EventArgs e)
         {
-            using (SqlConnection conn = new SqlConnection(@"Data Source=FUONGTWAN;Initial Catalog=dbms_mypham;Integrated Security=True"))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
 
@@ -465,7 +493,7 @@ namespace WindowsFormsApp1
             dgvProduct.Columns.Add("ImageURL", "Hình ảnh");
             dgvProduct.Columns.Add("Description", "Mô tả");
 
-            using (SqlConnection conn = new SqlConnection(@"Data Source=FUONGTWAN;Initial Catalog=dbms_mypham;Integrated Security=True"))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = @"SELECT * FROM Products
                          WHERE ProductName LIKE @kw OR Category LIKE @kw";
@@ -503,7 +531,7 @@ namespace WindowsFormsApp1
             dgvOrder.Columns.Add("TotalAmount", "Tổng tiền");
             dgvOrder.Columns.Add("Status", "Trạng thái");
 
-            using (SqlConnection conn = new SqlConnection(@"Data Source=FUONGTWAN;Initial Catalog=dbms_mypham;Integrated Security=True"))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 string query = "SELECT * FROM Orders";
@@ -534,7 +562,7 @@ namespace WindowsFormsApp1
                 DialogResult result = MessageBox.Show("Bạn có chắc muốn xóa đơn hàng này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
-                    using (SqlConnection conn = new SqlConnection(@"Data Source=fuongtwan;Initial Catalog=dbms_mypham;Integrated Security=True"))
+                    using (SqlConnection conn = new SqlConnection(connectionString))
                     {
                         conn.Open();
                         SqlCommand cmd = new SqlCommand("DELETE FROM Orders WHERE OrderID = @OrderID", conn);
@@ -564,7 +592,7 @@ namespace WindowsFormsApp1
             dgvOrder.Columns.Add("TotalAmount", "Tổng tiền");
             dgvOrder.Columns.Add("Status", "Trạng thái");
 
-            using (SqlConnection conn = new SqlConnection(@"Data Source=FUONGTWAN;Initial Catalog=dbms_mypham;Integrated Security=True"))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = @"SELECT * FROM Orders 
                          WHERE CAST(OrderID AS NVARCHAR) LIKE @kw 
@@ -601,7 +629,7 @@ namespace WindowsFormsApp1
             dgvOrderDetail.Columns.Add("Quantity", "Số lượng");
             dgvOrderDetail.Columns.Add("UnitPrice", "Đơn giá");
 
-            using (SqlConnection conn = new SqlConnection(@"Data Source=FUONGTWAN;Initial Catalog=dbms_mypham;Integrated Security=True"))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 string query = "SELECT * FROM OrderDetails";
@@ -637,7 +665,7 @@ namespace WindowsFormsApp1
             dgvOrderDetail.Columns.Add("Quantity", "Số lượng");
             dgvOrderDetail.Columns.Add("UnitPrice", "Đơn giá");
 
-            using (SqlConnection conn = new SqlConnection(@"Data Source=FUONGTWAN;Initial Catalog=dbms_mypham;Integrated Security=True"))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = @"SELECT * FROM OrderDetails
                          WHERE CAST(OrderID AS NVARCHAR) LIKE @kw 
@@ -672,7 +700,7 @@ namespace WindowsFormsApp1
                 DialogResult result = MessageBox.Show("Bạn có chắc muốn xóa chi tiết đơn hàng này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
-                    using (SqlConnection conn = new SqlConnection(@"Data Source=FUONGTWAN;Initial Catalog=dbms_mypham;Integrated Security=True"))
+                    using (SqlConnection conn = new SqlConnection(connectionString))
                     {
                         conn.Open();
                         SqlCommand cmd = new SqlCommand("DELETE FROM OrderDetails WHERE OrderDetailID = @id", conn);

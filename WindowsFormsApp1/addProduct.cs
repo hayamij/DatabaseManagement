@@ -17,8 +17,8 @@ namespace WindowsFormsApp1
         {
             InitializeComponent();
         }
-
-
+        // change FUONGTWAN to your server name
+        string connectionString = @"Data Source=FUONGTWAN;Initial Catalog=dbms_mypham;Integrated Security=True";
 
         private void btnThemProduct_Click(object sender, EventArgs e)
         {
@@ -35,7 +35,7 @@ namespace WindowsFormsApp1
                 return;
             }
 
-            using (SqlConnection conn = new SqlConnection(@"Data Source=fuongtwan;Initial Catalog=dbms_mypham;Integrated Security=True"))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 string query = @"INSERT INTO Products (ProductName, Category, Price, StockQuantity, ImageURL, Description)
@@ -61,8 +61,8 @@ namespace WindowsFormsApp1
 
             cbCategory.Items.AddRange(new string[]
             {
-        "Sửa rửa mặt", "Chống nắng", "Dưỡng da", "Trang điểm",
-        "Tẩy trang", "Dưỡng tóc", "Nước hoa", "Khác"
+                "Sửa rửa mặt", "Chống nắng", "Dưỡng da", "Trang điểm",
+                "Tẩy trang", "Dưỡng tóc", "Nước hoa", "Khác"
             });
             cbCategory.SelectedIndex = 0;
         }

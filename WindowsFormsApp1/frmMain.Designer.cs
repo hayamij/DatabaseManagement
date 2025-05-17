@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.Customer = new System.Windows.Forms.TabPage();
             this.label1 = new System.Windows.Forms.Label();
             this.txtTimKiemCustomer = new System.Windows.Forms.TextBox();
@@ -40,6 +40,10 @@
             this.btnThemCustomer = new System.Windows.Forms.Button();
             this.dgvCustomer = new System.Windows.Forms.DataGridView();
             this.home = new System.Windows.Forms.TabPage();
+            this.chartPurchaseHistory = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.dgvInStock = new System.Windows.Forms.DataGridView();
+            this.dgvRevenue = new System.Windows.Forms.DataGridView();
+            this.txtTriggerInfo = new System.Windows.Forms.TextBox();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.Product = new System.Windows.Forms.TabPage();
             this.label2 = new System.Windows.Forms.Label();
@@ -58,22 +62,19 @@
             this.txtTimKiemOrder = new System.Windows.Forms.TextBox();
             this.btnXoaOrder = new System.Windows.Forms.Button();
             this.dgvOrder = new System.Windows.Forms.DataGridView();
-            this.txtTriggerInfo = new System.Windows.Forms.TextBox();
-            this.dgvRevenue = new System.Windows.Forms.DataGridView();
-            this.dgvInStock = new System.Windows.Forms.DataGridView();
-            this.chartPurchaseHistory = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.txtThongTinTongQuan = new System.Windows.Forms.TextBox();
             this.Customer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCustomer)).BeginInit();
             this.home.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartPurchaseHistory)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvInStock)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvRevenue)).BeginInit();
             this.tabControl.SuspendLayout();
             this.Product.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProduct)).BeginInit();
             this.Order.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvOrderDetail)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvOrder)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvRevenue)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvInStock)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chartPurchaseHistory)).BeginInit();
             this.SuspendLayout();
             // 
             // Customer
@@ -168,6 +169,7 @@
             // 
             // home
             // 
+            this.home.Controls.Add(this.txtThongTinTongQuan);
             this.home.Controls.Add(this.chartPurchaseHistory);
             this.home.Controls.Add(this.dgvInStock);
             this.home.Controls.Add(this.dgvRevenue);
@@ -179,6 +181,47 @@
             this.home.TabIndex = 0;
             this.home.Text = "Home";
             this.home.UseVisualStyleBackColor = true;
+            // 
+            // chartPurchaseHistory
+            // 
+            chartArea2.Name = "ChartArea1";
+            this.chartPurchaseHistory.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chartPurchaseHistory.Legends.Add(legend2);
+            this.chartPurchaseHistory.Location = new System.Drawing.Point(22, 343);
+            this.chartPurchaseHistory.Name = "chartPurchaseHistory";
+            series2.ChartArea = "ChartArea1";
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            this.chartPurchaseHistory.Series.Add(series2);
+            this.chartPurchaseHistory.Size = new System.Drawing.Size(938, 200);
+            this.chartPurchaseHistory.TabIndex = 3;
+            this.chartPurchaseHistory.Text = "chart1";
+            // 
+            // dgvInStock
+            // 
+            this.dgvInStock.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvInStock.Location = new System.Drawing.Point(22, 185);
+            this.dgvInStock.Name = "dgvInStock";
+            this.dgvInStock.Size = new System.Drawing.Size(606, 152);
+            this.dgvInStock.TabIndex = 2;
+            // 
+            // dgvRevenue
+            // 
+            this.dgvRevenue.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvRevenue.Location = new System.Drawing.Point(634, 185);
+            this.dgvRevenue.Name = "dgvRevenue";
+            this.dgvRevenue.Size = new System.Drawing.Size(326, 152);
+            this.dgvRevenue.TabIndex = 1;
+            // 
+            // txtTriggerInfo
+            // 
+            this.txtTriggerInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTriggerInfo.Location = new System.Drawing.Point(22, 22);
+            this.txtTriggerInfo.Multiline = true;
+            this.txtTriggerInfo.Name = "txtTriggerInfo";
+            this.txtTriggerInfo.Size = new System.Drawing.Size(542, 146);
+            this.txtTriggerInfo.TabIndex = 0;
             // 
             // tabControl
             // 
@@ -205,7 +248,7 @@
             this.Product.Location = new System.Drawing.Point(4, 22);
             this.Product.Name = "Product";
             this.Product.Padding = new System.Windows.Forms.Padding(3);
-            this.Product.Size = new System.Drawing.Size(979, 604);
+            this.Product.Size = new System.Drawing.Size(979, 551);
             this.Product.TabIndex = 2;
             this.Product.Text = "Product";
             this.Product.UseVisualStyleBackColor = true;
@@ -296,7 +339,7 @@
             this.Order.Location = new System.Drawing.Point(4, 22);
             this.Order.Name = "Order";
             this.Order.Padding = new System.Windows.Forms.Padding(3);
-            this.Order.Size = new System.Drawing.Size(979, 604);
+            this.Order.Size = new System.Drawing.Size(979, 551);
             this.Order.TabIndex = 3;
             this.Order.Text = "Order";
             this.Order.UseVisualStyleBackColor = true;
@@ -381,45 +424,14 @@
             this.dgvOrder.Size = new System.Drawing.Size(668, 211);
             this.dgvOrder.TabIndex = 32;
             // 
-            // txtTriggerInfo
+            // txtThongTinTongQuan
             // 
-            this.txtTriggerInfo.Location = new System.Drawing.Point(22, 22);
-            this.txtTriggerInfo.Multiline = true;
-            this.txtTriggerInfo.Name = "txtTriggerInfo";
-            this.txtTriggerInfo.Size = new System.Drawing.Size(542, 146);
-            this.txtTriggerInfo.TabIndex = 0;
-            // 
-            // dgvRevenue
-            // 
-            this.dgvRevenue.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvRevenue.Location = new System.Drawing.Point(634, 185);
-            this.dgvRevenue.Name = "dgvRevenue";
-            this.dgvRevenue.Size = new System.Drawing.Size(326, 152);
-            this.dgvRevenue.TabIndex = 1;
-            // 
-            // dgvInStock
-            // 
-            this.dgvInStock.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvInStock.Location = new System.Drawing.Point(22, 185);
-            this.dgvInStock.Name = "dgvInStock";
-            this.dgvInStock.Size = new System.Drawing.Size(606, 152);
-            this.dgvInStock.TabIndex = 2;
-            // 
-            // chartPurchaseHistory
-            // 
-            chartArea1.Name = "ChartArea1";
-            this.chartPurchaseHistory.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chartPurchaseHistory.Legends.Add(legend1);
-            this.chartPurchaseHistory.Location = new System.Drawing.Point(22, 343);
-            this.chartPurchaseHistory.Name = "chartPurchaseHistory";
-            series1.ChartArea = "ChartArea1";
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.chartPurchaseHistory.Series.Add(series1);
-            this.chartPurchaseHistory.Size = new System.Drawing.Size(938, 200);
-            this.chartPurchaseHistory.TabIndex = 3;
-            this.chartPurchaseHistory.Text = "chart1";
+            this.txtThongTinTongQuan.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtThongTinTongQuan.Location = new System.Drawing.Point(584, 22);
+            this.txtThongTinTongQuan.Multiline = true;
+            this.txtThongTinTongQuan.Name = "txtThongTinTongQuan";
+            this.txtThongTinTongQuan.Size = new System.Drawing.Size(376, 146);
+            this.txtThongTinTongQuan.TabIndex = 4;
             // 
             // frmMain
             // 
@@ -436,6 +448,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvCustomer)).EndInit();
             this.home.ResumeLayout(false);
             this.home.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartPurchaseHistory)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvInStock)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvRevenue)).EndInit();
             this.tabControl.ResumeLayout(false);
             this.Product.ResumeLayout(false);
             this.Product.PerformLayout();
@@ -444,9 +459,6 @@
             this.Order.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvOrderDetail)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvOrder)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvRevenue)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvInStock)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chartPurchaseHistory)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -484,6 +496,7 @@
         private System.Windows.Forms.DataGridView dgvRevenue;
         private System.Windows.Forms.DataGridView dgvInStock;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartPurchaseHistory;
+        private System.Windows.Forms.TextBox txtThongTinTongQuan;
     }
 }
 

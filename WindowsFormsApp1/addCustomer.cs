@@ -21,6 +21,9 @@ namespace WindowsFormsApp1
         {
             InitializeComponent();
         }
+        // change FUONGTWAN to your server name
+        string connectionString = @"Data Source=FUONGTWAN;Initial Catalog=dbms_mypham;Integrated Security=True";
+
         private string HashPassword(string password)
         {
             using (SHA256 sha256 = SHA256.Create())
@@ -38,7 +41,7 @@ namespace WindowsFormsApp1
 
         private void btnThemCustomer_Click(object sender, EventArgs e)
         {
-            using (SqlConnection conn = new SqlConnection(@"Data Source=FUONGTWAN;Initial Catalog=dbms_mypham;Integrated Security=True"))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 string query = "INSERT INTO Customers (FullName, Email, Password, PhoneNumber, Address) VALUES (@FullName, @Email, @Password, @PhoneNumber, @Address)";
@@ -51,7 +54,7 @@ namespace WindowsFormsApp1
 
                 cmd.ExecuteNonQuery();
                 MessageBox.Show("Thêm khách hàng thành công!");
-                this.Close(); // đóng form sau khi thêm
+                this.Close(); 
             }
         }
 
@@ -59,5 +62,6 @@ namespace WindowsFormsApp1
         {
             this.Close();
         }
+
     }
 }
