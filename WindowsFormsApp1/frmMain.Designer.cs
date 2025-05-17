@@ -28,6 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.Customer = new System.Windows.Forms.TabPage();
             this.label1 = new System.Windows.Forms.Label();
             this.txtTimKiemCustomer = new System.Windows.Forms.TextBox();
@@ -58,7 +61,7 @@
             this.txtTriggerInfo = new System.Windows.Forms.TextBox();
             this.dgvRevenue = new System.Windows.Forms.DataGridView();
             this.dgvInStock = new System.Windows.Forms.DataGridView();
-            this.dgvPurchaseHistory = new System.Windows.Forms.DataGridView();
+            this.chartPurchaseHistory = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.Customer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCustomer)).BeginInit();
             this.home.SuspendLayout();
@@ -70,7 +73,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvOrder)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRevenue)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvInStock)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvPurchaseHistory)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartPurchaseHistory)).BeginInit();
             this.SuspendLayout();
             // 
             // Customer
@@ -85,7 +88,7 @@
             this.Customer.Location = new System.Drawing.Point(4, 22);
             this.Customer.Name = "Customer";
             this.Customer.Padding = new System.Windows.Forms.Padding(3);
-            this.Customer.Size = new System.Drawing.Size(979, 604);
+            this.Customer.Size = new System.Drawing.Size(979, 551);
             this.Customer.TabIndex = 1;
             this.Customer.Text = "Customer";
             this.Customer.UseVisualStyleBackColor = true;
@@ -165,7 +168,7 @@
             // 
             // home
             // 
-            this.home.Controls.Add(this.dgvPurchaseHistory);
+            this.home.Controls.Add(this.chartPurchaseHistory);
             this.home.Controls.Add(this.dgvInStock);
             this.home.Controls.Add(this.dgvRevenue);
             this.home.Controls.Add(this.txtTriggerInfo);
@@ -402,13 +405,21 @@
             this.dgvInStock.Size = new System.Drawing.Size(606, 152);
             this.dgvInStock.TabIndex = 2;
             // 
-            // dgvPurchaseHistory
+            // chartPurchaseHistory
             // 
-            this.dgvPurchaseHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvPurchaseHistory.Location = new System.Drawing.Point(22, 366);
-            this.dgvPurchaseHistory.Name = "dgvPurchaseHistory";
-            this.dgvPurchaseHistory.Size = new System.Drawing.Size(938, 166);
-            this.dgvPurchaseHistory.TabIndex = 3;
+            chartArea1.Name = "ChartArea1";
+            this.chartPurchaseHistory.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chartPurchaseHistory.Legends.Add(legend1);
+            this.chartPurchaseHistory.Location = new System.Drawing.Point(22, 343);
+            this.chartPurchaseHistory.Name = "chartPurchaseHistory";
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.chartPurchaseHistory.Series.Add(series1);
+            this.chartPurchaseHistory.Size = new System.Drawing.Size(938, 200);
+            this.chartPurchaseHistory.TabIndex = 3;
+            this.chartPurchaseHistory.Text = "chart1";
             // 
             // frmMain
             // 
@@ -435,7 +446,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvOrder)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRevenue)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvInStock)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvPurchaseHistory)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartPurchaseHistory)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -472,7 +483,7 @@
         private System.Windows.Forms.TextBox txtTriggerInfo;
         private System.Windows.Forms.DataGridView dgvRevenue;
         private System.Windows.Forms.DataGridView dgvInStock;
-        private System.Windows.Forms.DataGridView dgvPurchaseHistory;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartPurchaseHistory;
     }
 }
 

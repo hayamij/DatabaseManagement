@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Data.SqlClient;
+using System.Windows.Forms.DataVisualization.Charting;
+
 
 namespace WindowsFormsApp1
 {
@@ -25,7 +28,7 @@ namespace WindowsFormsApp1
             LoadTriggerInfo();
             LoadRevenueByMonth();
             LoadProductsInStock();
-            LoadCustomerPurchaseHistory();
+            LoadPurchaseHistoryChart();
             LoadCustomerData();
             LoadProductData();
             LoadOrderData();
@@ -64,19 +67,43 @@ namespace WindowsFormsApp1
                 dgvInStock.DataSource = dt;
             }
         }
-        private void LoadCustomerPurchaseHistory()
+
+        private void LoadPurchaseHistoryChart()
         {
+            chartPurchaseHistory.Series.Clear();
+            chartPurchaseHistory.Titles.Clear();
+            chartPurchaseHistory.ChartAreas[0].AxisX.LabelStyle.Format = "yyyy-MM-dd";
+            chartPurchaseHistory.Titles.Add("Lịch sử mua hàng theo ngày");
+
+            Series series = new Series("Doanh thu theo ngày");
+            series.ChartType = SeriesChartType.Line;
+            series.XValueType = ChartValueType.Date;
+
             using (SqlConnection conn = new SqlConnection(@"Data Source=fuongtwan;Initial Catalog=dbms_mypham;Integrated Security=True"))
             {
                 conn.Open();
-                string query = "SELECT * FROM vw_CustomerPurchaseHistory";
-                SqlDataAdapter da = new SqlDataAdapter(query, conn);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-                dgvPurchaseHistory.DataSource = dt;
-            }
-        }
+                string query = @"
+            SELECT OrderDate, SUM(Quantity * UnitPrice) AS Total
+            FROM vw_CustomerPurchaseHistory
+            GROUP BY OrderDate
+            ORDER BY OrderDate";
 
+                SqlCommand cmd = new SqlCommand(query, conn);
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    DateTime orderDate = Convert.ToDateTime(reader["OrderDate"]);
+                    decimal total = Convert.ToDecimal(reader["Total"]);
+
+                    series.Points.AddXY(orderDate, total);
+                }
+
+                reader.Close();
+            }
+
+            chartPurchaseHistory.Series.Add(series);
+        }
 
 
 
@@ -662,5 +689,6 @@ namespace WindowsFormsApp1
                 MessageBox.Show("Vui lòng chọn chi tiết đơn hàng để xóa.");
             }
         }
+
     }
 }
