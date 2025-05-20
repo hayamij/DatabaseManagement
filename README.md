@@ -35,3 +35,11 @@ SqlConnection conn = new SqlConnection(@"Data Source=FUONGTWAN;Initial Catalog=d
 4. Run the application
 Press F5 or Ctrl + F5 in Visual Studio.
 Use the interface to manage products, create orders, search, and view statistics.
+
+
+✍️ Tác giả – Authors
+Nguyễn Quang Tuấn Phương
+Nguyễn Hồng Tài
+Lê Minh Đức Tín
+GVHD: Thầy Đinh Hoàng Gia
+Môn học: Lập trình trực quan
